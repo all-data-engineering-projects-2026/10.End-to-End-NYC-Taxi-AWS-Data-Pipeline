@@ -1,0 +1,19 @@
+# Core AWS
+boto3>=1.34.0
+boto3-stubs>=1.43.37
+
+# Data processing
+pandas>=2.2.0
+pyspark>=3.5.0
+
+# S3 filesystem (used by s3fs / pandas S3 reads if needed outside Spark)
+s3fs>=2024.6.0
+
+# Database
+psycopg2-binary>=2.9.9
+
+# HTTP
+requests>=2.32.0
+
+# Airflow providers
+apache-airflow-providers-apache-spark>=4.0.0

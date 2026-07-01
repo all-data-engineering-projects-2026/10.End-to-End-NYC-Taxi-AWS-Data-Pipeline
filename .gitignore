@@ -1,0 +1,8 @@
+.env
+.DS_Store
+.idea/
+config.conf
+data/
+logs/
+*__pycache__*
+
