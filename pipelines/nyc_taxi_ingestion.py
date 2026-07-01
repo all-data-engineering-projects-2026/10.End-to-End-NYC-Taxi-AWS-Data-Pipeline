@@ -10,6 +10,10 @@ from etls.glue_utils import (
     create_glue_crawler,
     start_glue_crawler
 )
+from warehouse.redshift_utils import (
+    create_redshift_schema_and_tables,
+    load_all_gold_tables_to_redshift,
+)
 from utils.constants import AWS_BUCKET_NAME
 
 logger = logging.getLogger(__name__)
@@ -21,8 +25,8 @@ logger = logging.getLogger(__name__)
     schedule="@monthly",
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    tags=["nyc", "taxi", "bronze", "silver", "gold", "glue", "athena"],
-    params={"year": 2024, "month": 1}
+    tags=["nyc", "taxi", "bronze", "silver", "gold", "glue", "athena", "redshift"],
+    params={"year": 2024, "month": 2}
 )
 def nyc_taxi_data_pipeline():
 
@@ -47,6 +51,7 @@ def nyc_taxi_data_pipeline():
 
     @task
     def data_quality_check(silver_result: dict):
+
         from pyspark.sql import SparkSession
         from pyspark.sql.functions import col
 
@@ -115,6 +120,26 @@ def nyc_taxi_data_pipeline():
         start_glue_crawler("nyc_taxi_silver_crawler")
         start_glue_crawler("nyc_taxi_gold_crawler")
 
+    # =====================
+    # Redshift Warehouse Steps
+    # =====================
+    @task
+    def setup_redshift_warehouse():
+        """Ensure the nyc_taxi schema + Gold tables exist in Redshift."""
+        create_redshift_schema_and_tables()
+
+    @task
+    def load_redshift_warehouse(gold_result: dict):
+        """
+        COPY the current run's Gold partition (daily_summary, hourly_demand)
+        from S3 into Redshift. Runs after the Glue crawlers so Athena/Glue
+        and Redshift stay in sync, mirroring the tutorial's S3 -> Athena ->
+        Redshift flow.
+        """
+        year = gold_result["year"]
+        month = gold_result["month"]
+        load_all_gold_tables_to_redshift(year, month)
+
     # Task Dependencies
     bronze_result  = bronze_ingestion()
     silver_result  = silver_transformation(bronze_result)
@@ -124,7 +149,10 @@ def nyc_taxi_data_pipeline():
     glue_setup = setup_glue_infrastructure()
     crawlers = run_glue_crawlers(gold_result)
 
-    gold_result >> glue_setup >> crawlers
+    redshift_setup = setup_redshift_warehouse()
+    redshift_load = load_redshift_warehouse(gold_result)
+
+    gold_result >> glue_setup >> crawlers >> redshift_setup >> redshift_load
 
 
 nyc_taxi_data_pipeline()

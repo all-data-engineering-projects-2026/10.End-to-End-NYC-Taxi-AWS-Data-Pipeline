@@ -6,3 +6,11 @@ aws_bucket_name =
 
 [file_paths]
 ; output_path = /opt/airflow/data/output (not needed initially)
+
+[redshift]
+host =
+port = 5439
+dbname = dev
+user =
+password =
+iam_role =

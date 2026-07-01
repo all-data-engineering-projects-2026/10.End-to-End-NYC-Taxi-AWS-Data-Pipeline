@@ -5,4 +5,3 @@ config.conf
 data/
 logs/
 *__pycache__*
-

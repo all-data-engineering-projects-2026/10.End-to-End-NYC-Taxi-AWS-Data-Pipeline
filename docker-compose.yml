@@ -37,6 +37,7 @@ x-airflow-common:
     - ./data:/opt/airflow/data
     - ./requirements.txt:/opt/airflow/requirements.txt
     - ~/.aws:/home/airflow/.aws:ro
+    - ./warehouse:/opt/airflow/warehouse
 
 services:
   postgres:
