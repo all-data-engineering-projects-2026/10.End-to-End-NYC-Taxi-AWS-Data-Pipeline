@@ -138,15 +138,15 @@ The accompanying `NYC_Taxi_AWS_Data_Engineering_Notes.docx` contains detailed ex
 
 ## 📁 Deliverables
 
-| File | Description |
-|------|-------------|
-| `NYC_Taxi_AWS_Data_Engineering_Notes.docx` | Complete technical documentation |
+| File                                      | Description |
+|-------------------------------------------|-------------|
+| `NYC_Taxi_AWS_Data_Engineering_Notes.pdf` | Complete technical documentation |
 | `README_NYC_Taxi_AWS_Data_Engineering.md` | This high-level summary |
-| Full project code | Airflow DAGs, PySpark jobs, Glue & Redshift utilities |
+| Full project code                         | Airflow DAGs, PySpark jobs, Glue & Redshift utilities |
 
 ---
 
 **Author:** Himanshu  
-**Focus:** Azure + AWS Data Engineering, Airflow, PySpark, Modern Data Platforms
+**Focus:** AWS Data Engineering, Airflow, PySpark, Modern Data Platforms
 
 ---
